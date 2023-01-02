@@ -1,1 +1,2 @@
-# Predictability-of-language-change
+# Predictability of language change project
+WIP
