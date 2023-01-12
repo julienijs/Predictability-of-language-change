@@ -282,21 +282,4 @@ hist(ResAnalysis$Standardized_residual,
      ylim=c(0,200),
      labels=TRUE)
 
-######PART 3: Analysis of the coefficients######
-
-# read + clean dataset:
-CoeffAnalysis <- read_xlsx("C:/Users/u0149275/Documents/HowPredictableIsLanguageChange/coefficients_2.xlsx", col_names = TRUE)
-CoeffAnalysis <- droplevels(CoeffAnalysis[!CoeffAnalysis$Significant=="no",]) #throw out datasets that were not significant
-
-# boxplot:
-boxplot(CoeffAnalysis$Rico ~ CoeffAnalysis$Windowposition)
-
-
-CoeffAnalysis$Curve_Type <- relevel(as.factor(CoeffAnalysis$Curve_Type), ref="full")
-
-summary(v <- lm(Rico ~ Windowposition*Curve_Type, 
-                  data=CoeffAnalysis))
-plot(allEffects(v))
-
-
 
