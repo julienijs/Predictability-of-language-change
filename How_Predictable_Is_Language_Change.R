@@ -229,8 +229,21 @@ write.xlsx(finaldf, "residuals_analysis.xlsx", sheetName = "Sheet1",
 # read residuals_analysis.xlsx:
 ResAnalysis <- read_xlsx("residuals_analysis.xlsx", col_names = TRUE)
 
+# add a column "significance", where "no" is added for those datasets were not significant in the previous analysis:
+ResAnalysis <- cbind(ResAnalysis, Significance=NA)
+
+file1 = "The dat wat shift in the superlative"
+file2 = "The rise of experiencer-subject construal with psych verbs"
+for (row in 1:nrow(ResAnalysis)) {
+  if (ResAnalysis$File[row] == file1 || ResAnalysis$File[row] == file2) {
+    ResAnalysis$Significance[row] = "no"
+  } else {
+    ResAnalysis$Significance[row] = "yes"
+  }
+}
 
 ResAnalysis <- droplevels(ResAnalysis[!ResAnalysis$Significance=="no",]) #throw out datasets that were not significant
+
 
 ResAnalysis$Change_Type <- as.factor(ResAnalysis$Change_Type)
 ResAnalysis$Curve_Type <- relevel(as.factor(ResAnalysis$Curve_Type), ref="full")
