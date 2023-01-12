@@ -1,6 +1,6 @@
 #This is the script for the project How Predictable Is Language Change?
 
-setwd("C:/Users/u0149275/Documents/HowPredictableIsLanguageChange/Datasets")
+setwd("C:/Users/Datasets") # insert directory with the raw data
 
 # load libraries:
 library(xlsx)
@@ -39,10 +39,6 @@ prediction <- function(file) {
   subset1 <- Df[ which(Df$Decade >= 1900), ] # throw away first 5 decades
   subset2 <- Df[Df$Decade >1940 | Df$Decade < 1900,] # throw away 5 decades from the middle
   subset3 <- Df[ which(Df$Decade <= 1940), ] # throw away last 5 decades
-  #subset1 <- Df[ which(Df$Decade >= 1880), ] # throw away first 3 decades
-  #subset2 <- Df[Df$Decade >1930 | Df$Decade < 1910,] # throw away 3 decades from the middle
-  #subset3 <- Df[ which(Df$Decade <= 1960), ] # throw away last 3 decades
-  
   
   # logistic regression based on full dataset + prediction for temp.data:
   alldata.fit <- glm(Change ~ Decade, data = Df, family = binomial(link="logit"))
@@ -141,7 +137,6 @@ reformatting <- function(combineddata) {
     newrow <-data.frame(file_path_sans_ext(basename(file)), 
                          combineddata$Decade[val],
                          5,
-                         #3,
                          "begin",
                          combineddata$ss1[val], 
                          combineddata$full[val], 
@@ -156,7 +151,6 @@ reformatting <- function(combineddata) {
     newrow <- data.frame(file_path_sans_ext(basename(file)), 
                          combineddata$Decade[val],
                          5,
-                         #3,
                          "middle",
                          combineddata$ss2[val], 
                          combineddata$full[val], 
@@ -171,7 +165,6 @@ reformatting <- function(combineddata) {
     newrow <- data.frame(file_path_sans_ext(basename(file)), 
                          combineddata$Decade[val],
                          5,
-                         #3,
                          "end",
                          combineddata$ss3[val], 
                          combineddata$full[val], 
