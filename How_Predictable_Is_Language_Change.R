@@ -227,7 +227,7 @@ write.xlsx(finaldf, "residuals_analysis.xlsx", sheetName = "Sheet1",
 ######PART 2: Analysis of the residuals######
 
 # read residuals_analysis.xlsx:
-ResAnalysis <- read_xlsx("C:/Users/u0149275/Documents/HowPredictableIsLanguageChange/residuals_analysis.xlsx", col_names = TRUE)
+ResAnalysis <- read_xlsx("residuals_analysis.xlsx", col_names = TRUE)
 
 
 ResAnalysis <- droplevels(ResAnalysis[!ResAnalysis$Significance=="no",]) #throw out datasets that were not significant
