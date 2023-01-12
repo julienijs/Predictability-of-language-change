@@ -15,7 +15,7 @@ library(graphics)
 ######PART 1: Processing the datasets######
 
 # compile a list of .xlsx files (in working directory) that need to be processed:
-filenames <- list.files(getwd(), pattern="*", full.names=TRUE)
+filenames <- list.files(getwd(), pattern="xlsx*", full.names=TRUE)
 
 # make a new data set for predictions:
 temp.data <- data.frame(Decade = seq(1850, 1990, 10))
