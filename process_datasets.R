@@ -1,7 +1,3 @@
-#This is the script for the project How Predictable Is Language Change?
-
-setwd("C:/Users/Datasets") # insert directory with the raw data
-
 # load libraries:
 library(xlsx)
 library(readxl)
@@ -11,8 +7,6 @@ library(stats)
 library(ggplot2)
 library(tools)
 library(graphics)
-
-######Processing the datasets######
 
 # compile a list of .xlsx files (in working directory) that need to be processed:
 filenames <- list.files(getwd(), pattern="xlsx*", full.names=TRUE)
