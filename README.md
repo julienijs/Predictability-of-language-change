@@ -9,9 +9,15 @@ WIP
 ## Data & code
 Contains 2 datasets to try out the code. The other datasets can be downloaded from Zenodo. C-CLAMP corpus (Piersoul, De Troij & Van de Velde 2021).
 
+WIP
+
 ## Results
+WIP
 
 ![The hortative alternation_final](https://user-images.githubusercontent.com/107923146/212959306-be672e37-ef2f-44d2-aea2-fd0ad0d27d62.png)
+
+![Interaction effect for window position and part of the curve](https://user-images.githubusercontent.com/107923146/213192154-970b962d-f9ec-4b46-abaf-44238d11ba94.png)
+
 
 ## References
 - Piersoul, Jozefien, Robbert De Troij & Freek Van de Velde. 2021. 150 years of written Dutch: The construction of the Dutch Corpus of Contemporary and Late Modern Periodicals. Nederlandse Taalkunde 26(2). 171-194.
