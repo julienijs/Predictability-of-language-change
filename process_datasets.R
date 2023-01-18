@@ -1,3 +1,6 @@
+# This script is part of the Predictability of language change project and analyses the datasets: 
+# it makes models, plots them and compiles the residuals of those models
+
 # load libraries:
 library(xlsx)
 library(readxl)
