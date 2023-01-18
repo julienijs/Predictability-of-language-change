@@ -1,3 +1,5 @@
+# This script is part of the Predictability of language change project and analyses the residuals of the models
+
 # load libraries:
 library(xlsx)
 library(readxl)
@@ -8,27 +10,26 @@ library(ggplot2)
 library(tools)
 library(graphics)
 
+# read residuals_analysis_annotated.xlsx (= annotated version of residuals_analysis.xlsx):
+ResAnalysis <- read_xlsx("residuals_analysis_annotated.xlsx", col_names = TRUE)
 
-# read residuals_analysis.xlsx:
-ResAnalysis <- read_xlsx("residuals_analysis.xlsx", col_names = TRUE)
-
-# add a column "significance", where "no" is added for those datasets were not significant in the previous analysis:
-ResAnalysis <- cbind(ResAnalysis, Significance=NA)
-ResAnalysis <- droplevels(ResAnalysis[!ResAnalysis$Significance=="no",]) #throw out datasets that were not significant
+#throw out datasets that were not significant
+ResAnalysis <- droplevels(ResAnalysis[!ResAnalysis$Significance=="no",]) 
 
 # relevel and refactor:
 ResAnalysis$Change_Type <- as.factor(ResAnalysis$Change_Type)
 ResAnalysis$Curve_Type <- relevel(as.factor(ResAnalysis$Curve_Type), ref="full")
 ResAnalysis$Window <- relevel(as.factor(ResAnalysis$Windowposition), ref="middle omitted")
 
-# boxplots:
-boxplot(ResAnalysis$Standardized_residual ~ ResAnalysis$Windowposition)
-boxplot(ResAnalysis$Standardized_residual ~ ResAnalysis$Change_Type)
-boxplot(ResAnalysis$Standardized_residual ~ ResAnalysis$Curve_Type)
+# boxplots of the standardized residuals:
+boxplot(ResAnalysis$Standardized_residual ~ ResAnalysis$Windowposition) # vs windowposition
+boxplot(ResAnalysis$Standardized_residual ~ ResAnalysis$Change_Type) # vs the type of change
+boxplot(ResAnalysis$Standardized_residual ~ ResAnalysis$Curve_Type) # vs the type of curve
 
-boxplot(ResAnalysis$Raw_Residual ~ ResAnalysis$Windowposition)
-boxplot(ResAnalysis$Raw_Residual ~ ResAnalysis$Change_Type)
-boxplot(ResAnalysis$Raw_Residual ~ ResAnalysis$Curve_Type)
+# boxplots of the raw residuals:
+boxplot(ResAnalysis$Raw_Residual ~ ResAnalysis$Windowposition) # vs windowposition
+boxplot(ResAnalysis$Raw_Residual ~ ResAnalysis$Change_Type) # vs the type of change
+boxplot(ResAnalysis$Raw_Residual ~ ResAnalysis$Curve_Type) # vs the type of curve
 
 # linear models:
 summary(w <- lm(Standardized_residual ~ Window, 
