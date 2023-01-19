@@ -9,15 +9,31 @@ It is most likely impossible to foresee when and where a particular language cha
 
 In order to answer these questions we have build different models for 15 known binary language changes (new vs old variant), with the change (new or old variant) as the dependent variable and the decade (total of 15 decades) as the independent variable. For each change there are four models: one with all the data and three other models, each with some part of the data left out (first 5 decades, middle 5 decades or last 5 decades). We compare the residuals of these 3 partly blinded models to the residuals of the model with all the data to see how well the blind models are able to predict the missing decades.
 
-## Data & code
-Contains 2 datasets to try out the code. The other datasets can be downloaded from Zenodo. C-CLAMP corpus (Piersoul, De Troij & Van de Velde 2021).
+## Data
+Included in this repository are 2 datasets to try out the code. The other 13 datasets can be downloaded from Zenodo. Each dataset contains a binary alternation between an old and a new variant, tracked over 15 decades from 1850 to 1999. All changes were extracted from C-CLAMP (Piersoul, De Troij & Van de Velde 2021), a 200 million token corpus of excerpts from cultural magazines written in Dutch. The datasets include the following changes:
+- the *dat/wat* shift in indefinite numerals
+- the *dat/wat* shift in the superlative
+- the demise of predeterminer *al* 
+- the deflection of *veel*
+- the rise of the auxiliary *zijn* for the perfect tense
+- the demise of the inflection on the attributive first person singular possessive 
+- the rise of the close apposition with *soort* 
+- the hortative alternation
+- the rise of experiencer-subject construal with psych verbs
+- the loss of the article in quantifier *tal van* 
+- plural ending in *-s* vs. plural ending in *-en*
+- the loss of the article in complex prepositions 
+- the rise of the periphrastic superlative
+- *niet meer* ADJ vs. *niet* ADJ *meer*
+- Mass noun van Noun vs. Mass noun Noun
 
-WIP
+## Code
 
-## Results
-WIP
+The R script process_datasets.R builds models (as described above) and creates graphs based on the datasets. As an example, take a look at the models for the hortative alternation:
 
 ![The hortative alternation_final](https://user-images.githubusercontent.com/107923146/212959306-be672e37-ef2f-44d2-aea2-fd0ad0d27d62.png)
+
+The red line is the complete model. Th other colored lines are the partly blinded models. The black dots represent the real observed values for each decade. This graph allows for an easy visual inspection of the performance of the different models. In order to perform a quantitative analysis of the residuals, the script also collected the residuals of each model in a new dataset: residuals_analysis.xlsx. This dataset was further annotated for significance (2 changes were not significant, i.e. the rise of experiencer-subject construal with psych verbs and the *dat/wat* shift in the superlative), the type of change (did the change involve inflectional morphology or not?) and the type of the curve (do the 15 decades show the whole curve or only part of it: start, middle or end?), creating residuals_analysis_annotated.xlsx. Afterwards this new dataset was analyzed in residuals_analysis.R:
 
 ![Interaction effect for window position and part of the curve](https://user-images.githubusercontent.com/107923146/213192154-970b962d-f9ec-4b46-abaf-44238d11ba94.png)
 
