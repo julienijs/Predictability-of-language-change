@@ -2,7 +2,7 @@
 This repository contains the script and 2 datasets for the "Predictability of language change" project. As is already clear from the title, this project tries to answer the question *how predictable is language change?*
 
 ## General idea
-It is most likely impossible to foresee when and where a particular language change will emerge (Weinreich et al.’s 1968 problem of actuation), but the propagation of a language change follows a fairly predictable trajectory. Language change follows an S-cure through time, that is best modelled by the logistisc equation. We can conclude that a change is real when the residuals of the logistic curve (the difference between the observed and predicted values) are small. In this project we take a closer look at these residuals and ask the following questions:
+It is most likely impossible to foresee when and where a particular language change will emerge (Weinreich et al.’s 1968 problem of actuation), but the propagation of a language change follows a fairly predictable trajectory. Language change follows an S-cure through time, that is best modelled by the logistic equation. We can conclude that a change is real when the residuals of the logistic curve (the difference between the observed and predicted values) are small. In this project we take a closer look at these residuals and ask the following questions:
 
 1. Are S-curves robust enough to be used for prediction and forecasting? 
 2. Which variables will make the (standardized) residuals larger in the positive or negative direction in case of an ongoing change? 
