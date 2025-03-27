@@ -11,11 +11,26 @@ library(ggplot2)
 library(tools)
 library(graphics)
 
+# load libraries:
+library(openxlsx)
+library(readxl)
+library(effects)
+library(dplyr)
+library(stats)
+library(ggplot2)
+library(tools)
+library(graphics)
+library(pROC)
+library(lmtest)
+
+######PART 1: Processing the datasets######
+
 # compile a list of .xlsx files (in working directory) that need to be processed:
 filenames <- list.files(getwd(), pattern="xlsx*", full.names=TRUE)
 
 # make a new data set for predictions:
 temp.data <- data.frame(Decade = seq(1850, 1990, 10))
+
 
 # f1 is a function that makes predictions based on an input file:
 prediction <- function(file) {
@@ -39,22 +54,22 @@ prediction <- function(file) {
   
   # logistic regression based on full dataset + prediction for temp.data:
   alldata.fit <- glm(Change ~ Decade, data = Df, family = binomial(link="logit"))
-  print(summary(alldata.fit))
+  #print(summary(alldata.fit))
   alldata.pred <- as.data.frame(predict.glm(alldata.fit, temp.data, type="response", se.fit = T))
   
   # logistic regression with only subset1 + prediction for temp.data:
   subset1.fit <- glm(Change ~ Decade, data = subset1, family = binomial(link="logit"))
-  print(summary(subset1.fit))
+  #print(summary(subset1.fit))
   subset1.pred <- predict.glm(subset1.fit, temp.data, type = "response")
 
   # logistic regression with only subset2 + prediction for temp.data:
   subset2.fit <- glm(Change ~ Decade, data = subset2, family = binomial(link="logit"))
-  print(summary(subset2.fit))
+  #print(summary(subset2.fit))
   subset2.pred <- predict.glm(subset2.fit, temp.data, type="response")
   
   # logistic regression with only subset3 + prediction for temp.data:
   subset3.fit <- glm(Change ~ Decade, data = subset3, family = binomial(link="logit"))
-  print(summary(subset3.fit))
+  #print(summary(subset3.fit))
   subset3.pred <- predict.glm(subset3.fit, temp.data, type="response")
   
   # put new generated data in a dataframe:
@@ -66,22 +81,12 @@ prediction <- function(file) {
                              ss2 = subset2.pred,
                              ss3 = subset3.pred)
   
+  
   # add raw residuals:
   combineddata <- transform(combineddata, full_raw_res = obs - full)
   combineddata <- transform(combineddata, ss1_raw_res = obs - ss1)
   combineddata <- transform(combineddata, ss2_raw_res = obs - ss2)
   combineddata <- transform(combineddata, ss3_raw_res = obs - ss3)
-  
-  # add standardized residuals:
-  standdevfull <- sd(combineddata$full_raw_res)
-  standdev1 <- sd(combineddata$ss1_raw_res)
-  standdev2 <- sd(combineddata$ss2_raw_res)
-  standdev3 <- sd(combineddata$ss3_raw_res)
-  
-  combineddata <- transform(combineddata, full_stand_res = full_raw_res/standdevfull)
-  combineddata <- transform(combineddata, ss1_stand_res = ss1_raw_res/standdev1)
-  combineddata <- transform(combineddata, ss2_stand_res = ss2_raw_res/standdev2)
-  combineddata <- transform(combineddata, ss3_stand_res = ss3_raw_res/standdev3)
   
   return(combineddata)
 }
@@ -126,8 +131,7 @@ reformatting <- function(combineddata) {
                        Prediction = numeric(),
                        Glmfulldataset = numeric(),
                        Realvalue = numeric(),
-                       Raw_Residual = numeric(),
-                       Standardized_residual = numeric())
+                       Raw_Residual = numeric())
   
   # add data to output:
   for (val in 1:nrow(combineddata)) {
@@ -138,8 +142,7 @@ reformatting <- function(combineddata) {
                          combineddata$ss1[val], 
                          combineddata$full[val], 
                          combineddata$obs[val],
-                         combineddata$ss1_raw_res[val],
-                         combineddata$ss1_stand_res[val])
+                         combineddata$ss1_raw_res[val])
     names(newrow) <- names(output)
     output <- rbind(output, newrow)
   }
@@ -152,8 +155,7 @@ reformatting <- function(combineddata) {
                          combineddata$ss2[val], 
                          combineddata$full[val], 
                          combineddata$obs[val],
-                         combineddata$ss2_raw_res[val],
-                         combineddata$ss2_stand_res[val])
+                         combineddata$ss2_raw_res[val])
     names(newrow) <- names(output)
     output <- rbind(output, newrow)
   }
@@ -166,8 +168,7 @@ reformatting <- function(combineddata) {
                          combineddata$ss3[val], 
                          combineddata$full[val], 
                          combineddata$obs[val],
-                         combineddata$ss3_raw_res[val],
-                         combineddata$ss3_stand_res[val])
+                         combineddata$ss3_raw_res[val])
     names(newrow) <- names(output)
     output <- rbind(output, newrow)
   }
@@ -180,8 +181,7 @@ reformatting <- function(combineddata) {
                          combineddata$full[val], 
                          combineddata$full[val], 
                          combineddata$obs[val],
-                         combineddata$full_raw_res[val],
-                         combineddata$full_stand_res[val])
+                         combineddata$full_raw_res[val])
     names(newrow) <- names(output)
     output <- rbind(output, newrow)
   }
@@ -205,19 +205,49 @@ finaldf <- data.frame(File = character(),
                      Prediction = numeric(),
                      Glmfulldataset = numeric(),
                      Realvalue = numeric(),
-                     Raw_Residual = numeric(),
-                     Standardized_residual = numeric())
+                     Raw_Residual = numeric())
 
 # apply the functions "prediction" and "formatting" to all files in filenames:
 for (file in filenames) {
   out <- prediction(file)
-  print(out)
   formatted <-reformatting(out)
-  print(formatted)
   finaldf <- rbind(finaldf, formatted)
 }
 
 # save finaldf to .xlsx file:
 write.xlsx(finaldf, "residuals_analysis.xlsx", sheetName = "Sheet1", 
-           col.names = TRUE, row.names = TRUE, append = FALSE)
+           colNames = TRUE, rowNames = TRUE, append = FALSE)
+
+# Function to fit the model and calculate AUC
+get_auc <- function(data, formula) {
+  # Fit logistic regression model
+  model <- glm(formula, data = data, family = binomial)
+  
+  # Predict probabilities
+  predicted_probabilities <- predict(model, type = "response")
+  
+  # Extract the response variable
+  response_variable <- model$y
+  
+  # Calculate ROC and AUC
+  roc_obj <- roc(response_variable, predicted_probabilities)
+  auc(roc_obj)
+}
+
+c_value_results <- data.frame(filename = character(), c_value = numeric(), stringsAsFactors = FALSE)
+
+for (file in filenames) {
+  # read the file and put it into a data frame:
+  Df <- read_xlsx(file, col_names = TRUE)
+  # clean the data:
+  Df$Decade <- as.numeric(Df$Decade) # convert to numeric
+  Df$Change <- as.factor(Df$Change) # convert to factor
+  Df <- droplevels(Df[!Df$Change=="NA",]) # throw away NA rows
+  c_value = get_auc(Df, Change ~ Decade)
+  c_value_results <- rbind(c_value_results, data.frame(File = file_path_sans_ext(basename(file)), c_value = c_value, stringsAsFactors = FALSE))
+}
+
+# save c_value_results to .xlsx file:
+write.xlsx(c_value_results, "c_values.xlsx", sheetName = "Sheet1", 
+           colNames = TRUE, rowNames = TRUE, append = FALSE)
 
