@@ -2,16 +2,6 @@
 # it makes models, plots them and compiles the residuals of those models
 
 # load libraries:
-library(xlsx)
-library(readxl)
-library(effects)
-library(dplyr)
-library(stats)
-library(ggplot2)
-library(tools)
-library(graphics)
-
-# load libraries:
 library(openxlsx)
 library(readxl)
 library(effects)
